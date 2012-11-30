@@ -1,7 +1,5 @@
 ## go-localpath
 
-WIP
-
 This is a tiny shell script for managing Go projects with vendored dependencies.
 
 ### Motivation
@@ -14,17 +12,20 @@ to pick up the local dependencies? So for, the community's solutions (e.g.,
 [goven](https://github.com/kr/goven)) have involved rewriting all import paths for the vendored dependency to
 point to the new location. This has multiple disadvantages:
 
-* Import paths are now annoyingly long and don't have the nice correspondence to repo names they did before.
+* Import paths are now annoyingly long and don't have the nice correspondence to repo locations they did
+  before.
 * Updating the dependency is now more complicated than simply doing a `git pull` or similar (you must rewrite
   the import paths again). Similarly, it's not easy to know how your version of a dependency differs from the
   canonical one because the diffs include a bunch of changes to import paths.
 * The code is now tied to the particular location of the project. (For instance, if you changed the name of
-  the project, you've got to rewrite all the import paths again.
+  the project, you've got to rewrite all the import paths again.)
 
-go-localpath takes a much simpler approach. It simply temporarily changes `$GOPATH` to the local `vendor/`
+go-localpath takes a much simpler approach. It just temporarily changes `$GOPATH` to the local vendor
 directory. This means that:
 
-* Installing/updating a vendored library is as simple as `go get [-u]`.
+* Import paths are unchanged.
+* You can install/update a depedency just by copying it into your vendor directory.
+* Your project doesn't even have to live in your normal `$GOPATH`.
 
 ### Installation
 
@@ -40,10 +41,10 @@ You just need to get the `glp` script into your `$PATH`. There are many ways you
 
 ### Usage
 
-In the root of your project, make an empty file called `.glp`. (This file should also be committed to
-version control).
+In the root of your project, make an file called `.glp` with the name of your vendor directory. (This file
+should also be committed to version control).
 
-    $ touch .glp
+    $ echo 'vendor' > .glp
 
 Now, instead of using `go`, use `glp`. The script will check for a `.glp` file and change `$GOPATH` to
 `./vendor/`; if the file does not exist it leaves `$GOPATH` alone. In any case, it forwards all arguments to
@@ -51,8 +52,14 @@ Now, instead of using `go`, use `glp`. The script will check for a `.glp` file a
 
     $ glp build
 
-To vendor a library, just use `glp get` -- because `$GOPATH` is pointing at the local `vendor/` directory, the
-dependency will be installed into your project. Then you can commit the vendored library to version control.
+To vendor a library, copy the files into the right place under `vendor/src`. You can also just use `glp get`
+-- because `$GOPATH` is pointing at the local `vendor/` directory, the dependency will be installed into your
+project. You'll want to delete the VCS metadata file (e.g., `.git`) in the library directory, and you can
+commit the vendored library to version control. You can update by simply deleting the library and running `go
+get` again.
+
+You could also keep your dependencies as git submodules (if you're using git) if you want. In this case, you
+would manually manage the directories rather than using `go get`.
 
 ### Replacing the go command
 
@@ -68,8 +75,3 @@ go() {
 ```
 
 `glp` doesn't do this for you by default because it's a little magical.
-
-### TODO (maybe)
-
-* Allow for different dir names to be used instead of hard-coding `vendor/`.
-* The `.glp` file can contain any necessary configuration.

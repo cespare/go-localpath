@@ -1,5 +1,20 @@
 #!/bin/bash
 
-[[ -e ./.glp ]] && export GOPATH=$(pwd)/vendor
+set -e
+
+if [[ -f ./.glp ]]; then
+  dir=$(head -n 1 .glp)
+  if [[ -z $dir ]]; then
+    echo 'go-localpath error: your .glp file is empty (it should contain the name of the vendor directory).'
+    exit 1
+  else
+    if [[ ! -d $dir ]]; then
+      echo "go-localpath error: the vendor directory indicated by .glp is $dir, but it does not exist."
+      exit 1
+    fi
+  fi
+  dir=$(readlink -f $dir)
+  export GOPATH=$(pwd)/$dir
+fi
 
 go "$@"
