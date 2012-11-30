@@ -1,0 +1,5 @@
+#!/bin/bash
+
+[[ -e ./.glp ]] && export GOPATH=$(pwd)/vendor
+
+go "$@"
