@@ -8,7 +8,7 @@ This is a tiny shell script for managing Go projects with vendored dependencies.
 typically need to ensure you have precisely the same library code (a hermetic build).
 
 To accomplish this, people generally check in dependencies with their projects. Then the question becomes: how
-to pick up the local dependencies? So for, the community's solutions (e.g.,
+to pick up the local dependencies? So far, the community's solutions (e.g.,
 [goven](https://github.com/kr/goven)) have involved rewriting all import paths for the vendored dependency to
 point to the new location. This has multiple disadvantages:
 
