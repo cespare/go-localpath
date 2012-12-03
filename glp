@@ -14,7 +14,7 @@ if [[ -f ./.glp ]]; then
     fi
   fi
   dir=$(readlink -f $dir)
-  export GOPATH=$(pwd)/$dir
+  export GOPATH=$dir
 fi
 
 go "$@"
