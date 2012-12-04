@@ -75,3 +75,13 @@ go() {
 ```
 
 `glp` doesn't do this for you by default because it's a little magical.
+
+### Tips
+
+* If you're using `git`, you'll want to ignore built vendor packages. Assuming you're using `vendor/` as your
+  vendor directory, your `.gitignore` should probably have these entries:
+
+  ```
+  /vendor/pkg
+  /vendor/bin
+  ```
