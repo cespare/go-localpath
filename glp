@@ -13,7 +13,12 @@ if [[ -f ./.glp ]]; then
       exit 1
     fi
   fi
-  dir=$(readlink -f $dir)
+  # Now I want to get the absolute path. readlink -f $dir does the trick on linux, but that relies on GNU
+  # readlink.
+  pushd $dir > /dev/null
+  dir=`pwd -P`
+  popd > /dev/null
+  echo $dir
   export GOPATH=$dir
 fi
 
