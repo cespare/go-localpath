@@ -18,7 +18,6 @@ if [[ -f ./.glp ]]; then
   pushd $dir > /dev/null
   dir=`pwd -P`
   popd > /dev/null
-  echo $dir
   export GOPATH=$dir
 fi
 
