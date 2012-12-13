@@ -1,24 +1,43 @@
 #!/bin/bash
 
+# This script passes all arguments through directly to the 'go' command, possibly altering the $GOPATH
+# variable beforehand. This is done by checking for the presence of a file called .glp -- if the file does not
+# exist, then $GOPATH is left unchanged. If the file exists, then $GOPATH is set so that it contains the
+# following paths:
+#
+# * The current directory
+# * All directories listed in .glp, in order
+#
+# Each line of .glp must be the name of a directory that exists. It may be an absolute or relative path. A
+# typical use case will have a single directory (usually called vendor/, or third_party/, or similar).
+
 set -e
 
-if [[ -f ./.glp ]]; then
-  dir=$(head -n 1 .glp)
-  if [[ -z $dir ]]; then
-    echo 'go-localpath error: your .glp file is empty (it should contain the name of the vendor directory).'
-    exit 1
+append_fullpath() {
+  pushd $1 > /dev/null
+  fullpath=`pwd -P`
+  popd > /dev/null
+  if [[ -z $newpath ]]; then
+    newpath=$fullpath
   else
+    newpath="${newpath}:${fullpath}"
+  fi
+}
+
+if [[ -f ./.glp ]]; then
+  newpath=""
+  append_fullpath .
+  while read -r dir; do
+    if [[ -z $dir ]]; then
+      continue
+    fi
     if [[ ! -d $dir ]]; then
-      echo "go-localpath error: the vendor directory indicated by .glp is $dir, but it does not exist."
+      echo "go-localpath error: the directory '${dir}' indicated by .glp does not exist."
       exit 1
     fi
-  fi
-  # Now I want to get the absolute path. readlink -f $dir does the trick on linux, but that relies on GNU
-  # readlink.
-  pushd $dir > /dev/null
-  dir=`pwd -P`
-  popd > /dev/null
-  export GOPATH=$dir
+    append_fullpath $dir
+  done < ./.glp
+  export GOPATH=$newpath
 fi
 
 go "$@"

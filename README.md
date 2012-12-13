@@ -46,9 +46,9 @@ should also be committed to version control).
 
     $ echo 'vendor' > .glp
 
-Now, instead of using `go`, use `glp`. The script will check for a `.glp` file and change `$GOPATH` to
-`./vendor/`; if the file does not exist it leaves `$GOPATH` alone. In any case, it forwards all arguments to
-`go`. So, for example to build your project just type
+Now, instead of using `go`, use `glp`. The script will check for a `.glp` file and change `$GOPATH` to be
+`.:./vendor/` (actually expanded absolute paths); if the file does not exist it leaves `$GOPATH` alone. In any
+case, it forwards all arguments to `go`. So, for example to build your project just type
 
     $ glp build
 
@@ -84,4 +84,22 @@ go() {
   ```
   /vendor/pkg
   /vendor/bin
+  ```
+* `glp` will add any number of directories to your `$GOPATH`. Just put one on each line.
+* You can use the fact that `glp` adds the current (project root) director to the `$GOPATH` to organize your
+  app's packages, if you want (notice this means that your app code can live anywhere -- it's not limited to
+  your normal `$GOPATH`). Example structure:
+
+  ```
+  PROJECT_ROOT/
+  `-.glp            # Contains the single line "vendor"
+  `-app.go          # package main. Imports "util" and "github.com/bob/foobar"
+  `-src/
+    `-util/
+      `-util.go     # package util
+  `-vendor/
+    `-src/
+      `-github.com/
+        `-bob/
+          `-foobar/
   ```
