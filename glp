@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # This script passes all arguments through directly to the 'go' command, possibly altering the $GOPATH
-# variable beforehand. This is done by checking for the presence of a file called .glp -- if the file does not
-# exist, then $GOPATH is left unchanged. If the file exists, then $GOPATH is set so that it contains the
-# following paths:
+# variable beforehand. This is done by checking for the presence of a file called .glp in the current
+# directory or any ancestor directory recursively up to / -- if the file does not exist, then $GOPATH is left
+# unchanged. If the file exists, then $GOPATH is set so that it contains the following paths:
 #
 # * The current directory
 # * All directories listed in .glp, in order
@@ -24,7 +24,8 @@ append_fullpath() {
   fi
 }
 
-if [[ -f ./.glp ]]; then
+# This needs to be run from the directory containing .glp
+process_glp_file() {
   newpath=""
   append_fullpath .
   while read -r dir; do
@@ -32,12 +33,26 @@ if [[ -f ./.glp ]]; then
       continue
     fi
     if [[ ! -d $dir ]]; then
-      echo "go-localpath error: the directory '${dir}' indicated by .glp does not exist."
+      echo "go-localpath error: the directory '${dir}' indicated by .glp in `pwd` does not exist."
       exit 1
     fi
     append_fullpath $dir
   done < ./.glp
   export GOPATH=$newpath
-fi
+}
+
+# Check for .glp in the cwd and on up.
+cwd=`pwd`
+while true; do
+  oldcwd=`pwd`
+  if [[ -f ./.glp ]]; then
+    process_glp_file
+    break
+  fi
+  cd ..
+  if [[ `pwd` = "$oldcwd" ]]; then
+    break
+  fi
+done
 
 go "$@"

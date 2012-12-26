@@ -46,9 +46,10 @@ should also be committed to version control).
 
     $ echo 'vendor' > .glp
 
-Now, instead of using `go`, use `glp`. The script will check for a `.glp` file and change `$GOPATH` to be
-`.:./vendor/` (actually expanded absolute paths); if the file does not exist it leaves `$GOPATH` alone. In any
-case, it forwards all arguments to `go`. So, for example to build your project just type
+Now, instead of using `go`, use `glp`. The script will check for a `.glp` file in the current directory (or
+any directory above) and change `$GOPATH` to be `.:./vendor/` (actually paths relative to the directory
+containing `.glp` and expanded to absolute paths); if the file does not exist it leaves `$GOPATH` alone. In
+any case, it forwards all arguments to `go`. So, for example to build your project just type
 
     $ glp build
 
