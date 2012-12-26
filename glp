@@ -37,7 +37,7 @@ if [[ -f ./.glp ]]; then
     fi
     append_fullpath $dir
   done < ./.glp
-  export GOPATH="$newpath:$GOPATH"
+  export GOPATH=$newpath
 fi
 
 go "$@"
