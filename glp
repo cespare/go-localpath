@@ -54,5 +54,6 @@ while true; do
     break
   fi
 done
+cd $cwd
 
 go "$@"
