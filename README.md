@@ -82,25 +82,21 @@ go() {
 * If you're using `git`, you'll want to ignore built vendor packages. Assuming you're using `vendor/` as your
   vendor directory, your `.gitignore` should probably have these entries:
 
-  ```
-  /vendor/pkg
-  /vendor/bin
-  ```
+        /vendor/pkg
+        /vendor/bin
 * `glp` will add any number of directories to your `$GOPATH`. Just put one on each line.
 * You can use the fact that `glp` adds the current (project root) director to the `$GOPATH` to organize your
   app's packages, if you want (notice this means that your app code can live anywhere -- it's not limited to
   your normal `$GOPATH`). Example structure:
 
-  ```
-  PROJECT_ROOT/
-  `-.glp            # Contains the single line "vendor"
-  `-app.go          # package main. Imports "util" and "github.com/bob/foobar"
-  `-src/
-    `-util/
-      `-util.go     # package util
-  `-vendor/
-    `-src/
-      `-github.com/
-        `-bob/
-          `-foobar/
-  ```
+        PROJECT_ROOT/
+        `-.glp            # Contains the single line "vendor"
+        `-app.go          # package main. Imports "util" and "github.com/bob/foobar"
+        `-src/
+          `-util/
+            `-util.go     # package util
+        `-vendor/
+          `-src/
+            `-github.com/
+              `-bob/
+                `-foobar/
