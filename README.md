@@ -71,7 +71,7 @@ running `glp`. This shouldn't change your non-glp use of `go` at all (unless you
 ``` sh
 PATH=/path/to/go-localpath:$PATH # As before
 go() {
-  command go $@
+  command glp $@
 }
 ```
 
