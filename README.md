@@ -1,3 +1,5 @@
+**NOTE: I neither use nor maintain this project anymore.**
+
 ## go-localpath
 
 This is a tiny shell script for managing Go projects with vendored dependencies.
